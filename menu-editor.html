@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Editor - Jondelicious Bistro</title>
+    <link href="assets/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        .editor-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .editor-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .editor-header h1 {
+            color: var(--orange-yellow-crayola);
+            margin-bottom: 10px;
+        }
+        
+        .editor-header p {
+            color: var(--light-gray-70);
+        }
+        
+        .menu-items-list {
+            margin-bottom: 30px;
+        }
+        
+        .menu-item-card {
+            background: var(--bg-gradient-onyx);
+            border: 1px solid var(--jet);
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .menu-item-card h3 {
+            color: var(--white-2);
+            margin-bottom: 10px;
+        }
+        
+        .menu-item-card .description {
+            color: var(--light-gray);
+            margin-bottom: 10px;
+        }
+        
+        .menu-item-card .price {
+            color: var(--orange-yellow-crayola);
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+        
+        .btn-delete {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .add-form {
+            background: var(--bg-gradient-onyx);
+            border: 2px dashed var(--orange-yellow-crayola);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .add-form h3 {
+            color: var(--orange-yellow-crayola);
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--white-2);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--eerie-black-2);
+            border: 1px solid var(--jet);
+            border-radius: 8px;
+            color: var(--white-1);
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--orange-yellow-crayola);
+        }
+        
+        textarea.form-input {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn-add {
+            background: var(--bg-gradient-yellow-1);
+            color: var(--smoky-black);
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 187, 84, 0.3);
+        }
+        
+        .export-section {
+            background: var(--bg-gradient-onyx);
+            border: 1px solid var(--jet);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .export-section h3 {
+            color: var(--white-2);
+            margin-bottom: 15px;
+        }
+        
+        .export-section p {
+            color: var(--light-gray);
+            margin-bottom: 20px;
+        }
+        
+        .btn-export {
+            background: var(--bg-gradient-yellow-2);
+            color: var(--smoky-black);
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 10px;
+        }
+        
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 187, 84, 0.3);
+        }
+        
+        .code-output {
+            background: var(--eerie-black-2);
+            border: 1px solid var(--jet);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .code-output pre {
+            color: var(--light-gray);
+            overflow-x: auto;
+            margin: 0;
+            font-size: 13px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <div class="editor-header">
+            <h1>🍴 Menu Editor</h1>
+            <p>Edit your menu items offline, then copy the JSON to update your website</p>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Add New Item Form -->
+        <div class="add-form">
+            <h3><i class="bi bi-plus-circle"></i> Add New Menu Item</h3>
+            <form id="addItemForm">
+                <div class="form-group">
+                    <label class="form-label">Item Name</label>
+                    <input type="text" id="itemName" class="form-input" placeholder="e.g., BBQ Ribs" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="itemDescription" class="form-input" placeholder="Describe the dish..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Price (₱)</label>
+                    <input type="number" id="itemPrice" class="form-input" placeholder="299" step="0.01" required>
+                </div>
+                
+                <button type="submit" class="btn-add">
+                    <i class="bi bi-plus-lg"></i> Add Item
+                </button>
+            </form>
+        </div>
+
+        <!-- Menu Items List -->
+        <div class="menu-items-list">
+            <h3 style="color: var(--white-2); margin-bottom: 20px;">Current Menu Items</h3>
+            <div id="menuItemsList">
+                <!-- Items will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <h3><i class="bi bi-download"></i> Export Menu</h3>
+            <p>Copy the JSON below and save it as <code>data/menu.json</code></p>
+            
+            <button class="btn-export" onclick="showJSON()">
+                <i class="bi bi-code-square"></i> Show JSON
+            </button>
+            <button class="btn-export" onclick="copyJSON()">
+                <i class="bi bi-clipboard"></i> Copy to Clipboard
+            </button>
+            <button class="btn-export" onclick="downloadJSON()">
+                <i class="bi bi-download"></i> Download File
+            </button>
+            
+            <div id="codeOutput" class="code-output">
+                <pre id="jsonCode"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let menuItems = [];
+        let nextId = 1;
+
+        // Load existing menu from localStorage or use default
+        function loadMenu() {
+            const saved = localStorage.getItem('menuItems');
+            if (saved) {
+                menuItems = JSON.parse(saved);
+                nextId = Math.max(...menuItems.map(item => item.id), 0) + 1;
+            } else {
+                // Default items from database
+                menuItems = [
+                    {
+                        id: 1,
+                        item: "BBQ Ribs",
+                        description: "Slow-cooked ribs glazed with our signature smoky sauce.",
+                        price: "499"
+                    },
+                    {
+                        id: 2,
+                        item: "Garlic Rice Bowl",
+                        description: "Steamed rice tossed with garlic and herbs, served with grilled meat.",
+                        price: "99"
+                    },
+                    {
+                        id: 3,
+                        item: "Creamy Pasta",
+                        description: "Rich and creamy pasta with a Filipino twist.",
+                        price: "169"
+                    },
+                    {
+                        id: 4,
+                        item: "Seasonal Special",
+                        description: "Rotating dish inspired by local ingredients and festive flavors.",
+                        price: "250"
+                    }
+                ];
+                nextId = 5;
+                saveMenu();
+            }
+            displayMenu();
+        }
+
+        function saveMenu() {
+            localStorage.setItem('menuItems', JSON.stringify(menuItems));
+        }
+
+        function displayMenu() {
+            const container = document.getElementById('menuItemsList');
+            
+            if (menuItems.length === 0) {
+                container.innerHTML = '<p style="color: var(--light-gray); text-align: center;">No menu items yet. Add your first item above!</p>';
+                return;
+            }
+
+            container.innerHTML = menuItems.map(item => `
+                <div class="menu-item-card">
+                    <button class="btn-delete" onclick="deleteItem(${item.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <h3>${escapeHtml(item.item)}</h3>
+                    <p class="description">${escapeHtml(item.description)}</p>
+                    <div class="price">₱${escapeHtml(item.price)}</div>
+                </div>
+            `).join('');
+        }
+
+        function addItem(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('itemName').value.trim();
+            const description = document.getElementById('itemDescription').value.trim();
+            const price = document.getElementById('itemPrice').value.trim();
+
+            if (!name || !description || !price) {
+                showAlert('Please fill in all fields', 'danger');
+                return;
+            }
+
+            const newItem = {
+                id: nextId++,
+                item: name,
+                description: description,
+                price: price
+            };
+
+            menuItems.push(newItem);
+            saveMenu();
+            displayMenu();
+            
+            document.getElementById('addItemForm').reset();
+            showAlert('Item added successfully!', 'success');
+        }
+
+        function deleteItem(id) {
+            if (!confirm('Are you sure you want to delete this item?')) return;
+            
+            menuItems = menuItems.filter(item => item.id !== id);
+            saveMenu();
+            displayMenu();
+            showAlert('Item deleted successfully!', 'success');
+        }
+
+        function showJSON() {
+            const output = document.getElementById('codeOutput');
+            const code = document.getElementById('jsonCode');
+            
+            code.textContent = JSON.stringify(menuItems, null, 2);
+            output.style.display = 'block';
+        }
+
+        function copyJSON() {
+            const json = JSON.stringify(menuItems, null, 2);
+            
+            navigator.clipboard.writeText(json).then(() => {
+                showAlert('JSON copied to clipboard!', 'success');
+            }).catch(() => {
+                showAlert('Failed to copy. Please use "Show JSON" and copy manually.', 'danger');
+            });
+        }
+
+        function downloadJSON() {
+            const json = JSON.stringify(menuItems, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'menu.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showAlert('Menu downloaded as menu.json!', 'success');
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type}`;
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Event listeners
+        document.getElementById('addItemForm').addEventListener('submit', addItem);
+
+        // Load menu on page load
+        loadMenu();
+    </script>
+</body>
+</html>

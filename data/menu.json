@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "item": "BBQ Ribs",
+    "description": "Slow-cooked ribs glazed with our signature smoky sauce.",
+    "price": "499"
+  },
+  {
+    "id": 2,
+    "item": "Garlic Rice Bowl",
+    "description": "Steamed rice tossed with garlic and herbs, served with grilled meat.",
+    "price": "99"
+  },
+  {
+    "id": 3,
+    "item": "Creamy Pasta",
+    "description": "Rich and creamy pasta with a Filipino twist.",
+    "price": "169"
+  },
+  {
+    "id": 4,
+    "item": "Seasonal Special",
+    "description": "Rotating dish inspired by local ingredients and festive flavors.",
+    "price": "250"
+  }
+]
